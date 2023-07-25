@@ -38,6 +38,6 @@ fun Greeting(name: String) {
 @Composable
 fun DefaultPreview() {
     JiraTestTheme {
-        Greeting("Android")
+        Greeting("Androidfgdfgdfgd")
     }
 }
