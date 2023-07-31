@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Toolbar(query: String, onQueryChanged: (String) -> Unit) {
     Column(Modifier.padding(horizontal = 10.dp, vertical = 5.dp)) {
-        Image(painter = painterResource(R.drawable.ic_logo), modifier = Modifier.size(31.dp), contentDescription = "logo")
+        Image(painter = painterResource(R.drawable.ic_logo), modifier = Modifier.size(31.dp), contentDescription = "app_logo")
         OutlinedTextField(query, onQueryChanged)
     }
 }
