@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.kt.jiratest'
+    namespace 'com.jglee.aucison'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.kt.jiratest"
+        applicationId "com.jglee.aucison"
         minSdk 21
         targetSdk 34
         versionCode 1

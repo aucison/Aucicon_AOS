@@ -1,4 +1,4 @@
-package com.kt.jiratest.ui.theme
+package com.jglee.aucison.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

@@ -1,4 +1,4 @@
-package com.kt.jiratest
+package com.kt.aucison
 
 import org.junit.Test
 
