@@ -1,4 +1,4 @@
-package com.kt.jiratest
+package com.kt.aucison
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
