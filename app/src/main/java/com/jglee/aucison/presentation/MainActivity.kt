@@ -1,4 +1,4 @@
-package com.jglee.aucison
+package com.jglee.aucison.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -18,6 +18,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jglee.aucison.R
+import com.jglee.aucison.presentation.main.MainPage
 import com.jglee.aucison.ui.theme.AucisonTheme
 
 class MainActivity : ComponentActivity() {
@@ -42,10 +44,10 @@ fun RootScreen() {
                 Toolbar(searchQuery) {
 
                 }
+
                 Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
-                    Text("Main Page Area")
+                    MainPage()
                 }
-                BottomNavigation()
             }
         }
     }
@@ -53,41 +55,50 @@ fun RootScreen() {
 
 @Composable
 fun Toolbar(query: String, onQueryChanged: (String) -> Unit) {
-    Row(Modifier
-        .padding(horizontal = 10.dp, vertical = 10.dp)
-        .height(30.dp)
-        .fillMaxWidth()) {
-        Image(
-            painter = painterResource(R.drawable.ic_logo),
-            modifier = Modifier.size(30.dp),
-            contentDescription = "app_logo"
-        )
+    Column {
+        Row(Modifier
+            .padding(horizontal = 10.dp, vertical = 10.dp)
+            .height(30.dp)
+            .fillMaxWidth()) {
+            Image(
+                painter = painterResource(R.drawable.ic_logo),
+                modifier = Modifier.size(30.dp),
+                contentDescription = "app_logo"
+            )
 
-        Spacer(Modifier.width(10.dp))
+            Spacer(Modifier.width(10.dp))
 
-        OutlinedTextField(
-            value = query,
-            onValueChange = onQueryChanged,
-            textStyle = TextStyle(color = Color.Black, fontSize = 14.sp),
-            modifier = Modifier.fillMaxWidth(),
-        )
+            OutlinedTextField(
+                value = query,
+                onValueChange = onQueryChanged,
+                textStyle = TextStyle(color = Color.Black, fontSize = 14.sp),
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
 
+        Divider(color = Color.LightGray, thickness = 1.dp)
     }
+
 }
 
 @Composable
 fun BottomNavigation() {
-    Row(Modifier.padding(10.dp).height(50.dp).fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
-            Text("Market", fontSize = 14.sp, color = Color.Black)
-        }
-        Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
-            Text("Sell", fontSize = 14.sp, color = Color.Black)
-        }
-        Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
-            Text("My Page", fontSize = 14.sp, color = Color.Black)
+    Column {
+        Divider(color = Color.LightGray, thickness = 1.dp)
+
+        Row(Modifier.padding(10.dp).height(50.dp).fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
+                Text("Market", fontSize = 14.sp, color = Color.Black)
+            }
+            Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
+                Text("Sell", fontSize = 14.sp, color = Color.Black)
+            }
+            Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
+                Text("My Page", fontSize = 14.sp, color = Color.Black)
+            }
         }
     }
+
 }
 
 @Preview(showBackground = true)
