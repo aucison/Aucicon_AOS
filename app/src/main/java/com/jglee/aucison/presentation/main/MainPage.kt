@@ -1,22 +1,27 @@
 package com.jglee.aucison.presentation.main
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,6 +34,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,21 +44,35 @@ import com.jglee.aucison.data.main.ItemType
 @Composable
 fun MainPage() {
     var selectedItemType by remember { mutableStateOf(ItemType.NORMAL) }
-    var verticalScrollState = rememberScrollState()
-    val viewModel = viewModel<MainViewModel>()
+    val verticalScrollState = rememberScrollState()
+    val viewModel = viewModel<MainViewModel>().also {
+        requestBanners(it)
+    }
 
-    val banners by remember { mutableStateOf(viewModel.requestBanner()) }
+    Column(
+        Modifier.fillMaxWidth()
+            .background(Color.White)
+            .padding(horizontal = 10.dp)
+    ) {
 
-    Column(Modifier.fillMaxWidth().background(Color.White).padding(horizontal = 10.dp)) {
         MainItemTypeSelector(selectedItemType) { selectedItemType = it }
 
-        Column(Modifier.weight(1f).verticalScroll(verticalScrollState)) {
+        Column(
+            Modifier.weight(1f)
+                .verticalScroll(verticalScrollState)
+        ) {
             MainBanner()
-            BestItemLayout(banners)
+            BestItemLayout(viewModel)
             NewItemLayout()
         }
     }
 
+}
+
+private fun requestBanners(viewModel: MainViewModel) {
+    viewModel.requestMainBanner()
+    viewModel.requestBestItemList()
+    viewModel.requestNewItemList()
 }
 
 @Composable
@@ -61,7 +81,8 @@ fun MainItemTypeSelector(selected: ItemType, onClick: (ItemType) -> Unit) {
     var height by remember { mutableStateOf(0.dp) }
 
     Row(
-        Modifier.padding(vertical = 5.dp).fillMaxWidth(),
+        Modifier.padding(vertical = 5.dp)
+            .fillMaxWidth(),
     ) {
         Button(
             { onClick(ItemType.NORMAL) },
@@ -105,7 +126,8 @@ fun MainBanner() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(300.dp)
+            .aspectRatio(2.5738f)
+//            .height(300.dp)
             .padding(bottom = 10.dp)
             .background(Color.LightGray),
         contentAlignment = Alignment.Center
@@ -117,23 +139,35 @@ fun MainBanner() {
 @Composable
 fun NewItemLayout() {
     Box(
-        modifier = Modifier.fillMaxWidth().height(150.dp).padding(bottom = 10.dp)
+        modifier = Modifier.fillMaxWidth()
+            .height(150.dp)
+            .padding(bottom = 10.dp)
             .background(Color.LightGray), contentAlignment = Alignment.Center
     ) {
         Text("뉴 아이템 영역")
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun BestItemLayout(banners: List<Color>) {
-    LazyRow {
+fun BestItemLayout(viewModel: MainViewModel) {
+    val banners by viewModel.bestItemList.collectAsState(listOf())
+    val lazyListState = rememberLazyListState()
+
+    LazyRow(
+        modifier = Modifier.fillMaxWidth()
+            .height(150.dp)
+            .padding(bottom = 10.dp),
+        state = lazyListState,
+        flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState)
+    ) {
         items(items = banners) { item ->
-            Box(
-                modifier = Modifier.fillMaxWidth().height(150.dp).padding(bottom = 10.dp)
-                    .background(item), contentAlignment = Alignment.Center
-            ) {
-                Text("베스트 아이템 영역")
-            }
+            Text(
+                "베스트 아이템 영역",
+                modifier = Modifier.fillParentMaxSize()
+                    .background(item),
+                textAlign = TextAlign.Center
+            )
         }
     }
 }

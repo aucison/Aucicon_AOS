@@ -5,7 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -13,12 +16,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
@@ -47,7 +52,6 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun RootScreen() {
-    val searchQuery by remember { mutableStateOf("검색 필드") }
     val navController = rememberNavController()
     val scaffoldState = rememberScaffoldState()
     val coroutineScope = rememberCoroutineScope()
@@ -60,7 +64,7 @@ fun RootScreen() {
             Scaffold(
                 scaffoldState = scaffoldState,
                 topBar = {
-                    Toolbar(searchQuery, onQueryChanged = {}, onClickMenu = {
+                    Toolbar(onClickMenu = {
                         coroutineScope.launch(Dispatchers.Main) {
                             scaffoldState.drawerState.run {
                                 if (isOpen) close()
@@ -95,51 +99,69 @@ fun RootScreen() {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Toolbar(query: String, onQueryChanged: (String) -> Unit, onClickMenu: () -> Unit) {
-    Column {
-        Row(
-            Modifier
-                .padding(horizontal = 10.dp, vertical = 10.dp)
-                .height(30.dp)
-                .fillMaxWidth()
+fun Toolbar(onClickMenu: () -> Unit) {
+    var searchQuery by remember { mutableStateOf("") }
+
+    Row(
+        modifier = Modifier
+            .padding(horizontal = 10.dp, vertical = 10.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Image(
+            painter = painterResource(R.drawable.ic_logo),
+            modifier = Modifier.size(30.dp),
+            contentDescription = "app_logo"
+        )
+
+        BasicTextField(
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
+            textStyle = TextStyle(color = Color.Black, fontSize = 14.sp),
+            modifier = Modifier.weight(1f)
+                .padding(5.dp)
+                .border(
+                    width = 1.dp,
+                    color = Color.Black,
+                    shape = RoundedCornerShape(5.dp)
+                ),
+            decorationBox = { innerTextField ->
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(5.dp)
+                ) {
+                    if (searchQuery.isEmpty()) {
+                        Text(
+                            text = stringResource(R.string.toolbar_search_placeholder),
+                            color = Color.Gray,
+                            fontSize = 14.sp
+                        )
+                    }
+
+                    innerTextField()
+                }
+            }
+        )
+
+        Button(
+            onClick = onClickMenu,
+            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+            border = BorderStroke(0.dp, Color.White),
+            shape = RectangleShape,
+            elevation = ButtonDefaults.elevation(0.dp),
+            contentPadding = PaddingValues(5.dp),
+            modifier = Modifier.size(30.dp),
         ) {
             Image(
-                painter = painterResource(R.drawable.ic_logo),
-                modifier = Modifier.size(30.dp),
-                contentDescription = "app_logo"
+                painter = painterResource(R.drawable.ic_menu),
+                contentDescription = "open drawer"
             )
-
-            Spacer(Modifier.width(10.dp))
-
-            OutlinedTextField(
-                value = query,
-                onValueChange = onQueryChanged,
-                textStyle = TextStyle(color = Color.Black, fontSize = 14.sp),
-                modifier = Modifier.weight(1f),
-            )
-
-            Spacer(Modifier.width(10.dp))
-
-            Button(
-                onClick = onClickMenu,
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-                border = BorderStroke(0.dp, Color.White),
-                shape = RectangleShape,
-                elevation = ButtonDefaults.elevation(0.dp),
-                contentPadding = PaddingValues(5.dp),
-                modifier = Modifier.size(30.dp),
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.ic_menu),
-                    contentDescription = "open drawer"
-                )
-            }
         }
-
-        Divider(color = Color.LightGray, thickness = 1.dp)
     }
 
+    Divider(color = Color.LightGray, thickness = 1.dp)
 }
 
 @Preview(showBackground = true)
