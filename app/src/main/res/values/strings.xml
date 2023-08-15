@@ -2,4 +2,8 @@
     <string name="app_name">Aucison</string>
     <string name="item_type_normal">일반</string>
     <string name="item_type_handmade">핸드메이드</string>
+    <string name="screen_name_my_page">My Page</string>
+    <string name="screen_name_sell">Sell</string>
+    <string name="screen_name_market">Market</string>
+    <string name="screen_name_home">홈</string>
 </resources>

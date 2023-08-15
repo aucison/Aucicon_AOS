@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
@@ -126,10 +127,10 @@ fun NewItemLayout() {
 @Composable
 fun BestItemLayout(banners: List<Color>) {
     LazyRow {
-        banners.forEach {
+        items(items = banners) { item ->
             Box(
                 modifier = Modifier.fillMaxWidth().height(150.dp).padding(bottom = 10.dp)
-                    .background(it), contentAlignment = Alignment.Center
+                    .background(item), contentAlignment = Alignment.Center
             ) {
                 Text("베스트 아이템 영역")
             }
