@@ -6,4 +6,5 @@
     <string name="screen_name_sell">Sell</string>
     <string name="screen_name_market">Market</string>
     <string name="screen_name_home">홈</string>
+    <string name="toolbar_search_placeholder">브랜드명, 상품명</string>
 </resources>
