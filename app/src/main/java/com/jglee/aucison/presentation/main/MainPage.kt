@@ -39,29 +39,30 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.jglee.aucison.data.main.ItemType
+import com.jglee.aucison.data.main.SellType
 
 @Composable
 fun MainPage() {
-    var selectedItemType by remember { mutableStateOf(ItemType.NORMAL) }
+    var selectedSellType by remember { mutableStateOf(SellType.AUCTION) }
     val verticalScrollState = rememberScrollState()
-    val viewModel = viewModel<MainViewModel>().also {
-        requestBanners(it)
+    val viewModel = viewModel<MainViewModel>().apply {
+        requestMainBanner()
+        requestBestItemList()
+        requestNewItemList()
     }
-
     Column(
         Modifier.fillMaxWidth()
             .background(Color.White)
             .padding(horizontal = 10.dp)
     ) {
 
-        MainItemTypeSelector(selectedItemType) { selectedItemType = it }
+        MainSellTypeSelector(selectedSellType) { selectedSellType = it }
 
         Column(
             Modifier.weight(1f)
                 .verticalScroll(verticalScrollState)
         ) {
-            MainBanner()
+            MainBanner(viewModel)
             BestItemLayout(viewModel)
             NewItemLayout()
         }
@@ -69,71 +70,55 @@ fun MainPage() {
 
 }
 
-private fun requestBanners(viewModel: MainViewModel) {
-    viewModel.requestMainBanner()
-    viewModel.requestBestItemList()
-    viewModel.requestNewItemList()
-}
-
 @Composable
-fun MainItemTypeSelector(selected: ItemType, onClick: (ItemType) -> Unit) {
+fun SellCategoryButton(type: SellType, selected: SellType, onClick: (SellType) -> Unit) {
     val localDensity = LocalDensity.current
     var height by remember { mutableStateOf(0.dp) }
 
-    Row(
-        Modifier.padding(vertical = 5.dp)
-            .fillMaxWidth(),
+    Button(
+        { onClick(type) },
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+        border = BorderStroke(0.dp, Color.White),
+        shape = RectangleShape,
+        elevation = ButtonDefaults.elevation(0.dp),
+        contentPadding = PaddingValues(vertical = 5.dp, horizontal = 10.dp),
     ) {
-        Button(
-            { onClick(ItemType.NORMAL) },
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-            border = BorderStroke(0.dp, Color.White),
-            shape = RectangleShape,
-            elevation = ButtonDefaults.elevation(0.dp),
-            contentPadding = PaddingValues(vertical = 5.dp, horizontal = 10.dp)
-        ) {
-            Text(
-                stringResource(ItemType.NORMAL.resource),
-                color = Color.Black,
-                fontSize = 16.sp,
-                fontWeight = if (selected == ItemType.NORMAL) FontWeight.Bold else FontWeight.Normal,
-                modifier = Modifier.onGloballyPositioned { coordinates ->
-                    height = with(localDensity) { coordinates.size.height.toDp() }
-                }
-            )
-        }
-
-        Button(
-            { onClick(ItemType.HANDMADE) },
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-            border = BorderStroke(0.dp, Color.White),
-            shape = RectangleShape,
-            elevation = ButtonDefaults.elevation(0.dp),
-            contentPadding = PaddingValues(vertical = 5.dp, horizontal = 10.dp)
-        ) {
-            Text(
-                stringResource(ItemType.HANDMADE.resource),
-                color = Color.Black,
-                fontSize = 16.sp,
-                fontWeight = if (selected == ItemType.HANDMADE) FontWeight.Bold else FontWeight.Normal
-            )
-        }
+        Text(
+            stringResource(type.resource),
+            color = Color.Black,
+            fontSize = 16.sp,
+            fontWeight = if (type == selected) FontWeight.Bold else FontWeight.Normal,
+            modifier = Modifier.onGloballyPositioned { coordinates ->
+                height = with(localDensity) { coordinates.size.height.toDp() }
+            }
+        )
     }
 }
 
 @Composable
-fun MainBanner() {
-    Box(
+fun MainSellTypeSelector(selected: SellType, onClick: (SellType) -> Unit) {
+    Row(
+        Modifier.padding(vertical = 5.dp)
+            .fillMaxWidth(),
+    ) {
+        SellCategoryButton(SellType.AUCTION, selected, onClick)
+        SellCategoryButton(SellType.NORMAL, selected, onClick)
+    }
+}
+
+@Composable
+fun MainBanner(viewModel: MainViewModel) {
+    val mainBanner by viewModel.mainBannerList.collectAsState(listOf())
+
+    AutoLoopBanner(
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(2.5738f)
 //            .height(300.dp)
             .padding(bottom = 10.dp)
             .background(Color.LightGray),
-        contentAlignment = Alignment.Center
-    ) {
-        Text("메인 배너 영역")
-    }
+        list = mainBanner
+    )
 }
 
 @Composable
