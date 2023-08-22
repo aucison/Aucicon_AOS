@@ -3,7 +3,9 @@ package com.jglee.aucison.presentation.main
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,10 +14,12 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -33,12 +37,15 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.jglee.aucison.R
+import com.jglee.aucison.data.main.ProductServiceResponse
 import com.jglee.aucison.data.main.SellType
 
 @Composable
@@ -50,22 +57,21 @@ fun MainPage() {
         requestBestItemList()
         requestNewItemList()
     }
+
+    val mainBanners = viewModel.mainBannerList.collectAsState(listOf())
+    val newItemList = viewModel.newItemList.collectAsState(listOf())
+    val bestItemList = viewModel.bestItemList.collectAsState(listOf())
+
     Column(
-        Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
             .background(Color.White)
-            .padding(horizontal = 10.dp)
+            .verticalScroll(verticalScrollState),
+//        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-
+        MainBanner(mainBanners.value)
         MainSellTypeSelector(selectedSellType) { selectedSellType = it }
-
-        Column(
-            Modifier.weight(1f)
-                .verticalScroll(verticalScrollState)
-        ) {
-            MainBanner(viewModel)
-            BestItemLayout(viewModel)
-            NewItemLayout()
-        }
+        BestItemLayout(bestItemList.value)
+        NewItemLayout(newItemList.value)
     }
 
 }
@@ -74,46 +80,44 @@ fun MainPage() {
 fun SellCategoryButton(type: SellType, selected: SellType, onClick: (SellType) -> Unit) {
     val localDensity = LocalDensity.current
     var height by remember { mutableStateOf(0.dp) }
+    Text(
+        stringResource(type.resource),
+        color = Color.Black,
+        fontSize = 16.sp,
+        fontWeight = if (type == selected) FontWeight.Bold else FontWeight.Medium,
+        modifier = Modifier.onGloballyPositioned { coordinates ->
+            height = with(localDensity) { coordinates.size.height.toDp() }
+        }
+            .clickable { onClick(type) }
+            .padding(10.dp)
+    )
+}
 
-    Button(
-        { onClick(type) },
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-        border = BorderStroke(0.dp, Color.White),
-        shape = RectangleShape,
-        elevation = ButtonDefaults.elevation(0.dp),
-        contentPadding = PaddingValues(vertical = 5.dp, horizontal = 10.dp),
+@Composable
+fun MainSellTypeSelector(selected: SellType, onClick: (SellType) -> Unit) {
+    Column(
+        Modifier.fillMaxWidth(),
     ) {
-        Text(
-            stringResource(type.resource),
-            color = Color.Black,
-            fontSize = 16.sp,
-            fontWeight = if (type == selected) FontWeight.Bold else FontWeight.Normal,
-            modifier = Modifier.onGloballyPositioned { coordinates ->
-                height = with(localDensity) { coordinates.size.height.toDp() }
-            }
+        Row {
+            SellCategoryButton(SellType.AUCTION, selected, onClick)
+            SellCategoryButton(SellType.NORMAL, selected, onClick)
+        }
+
+        Box(
+            modifier = Modifier.fillMaxWidth()
+                .height(1.dp)
+                .background(Color.LightGray)
+                .padding(horizontal = 10.dp)
         )
     }
 }
 
 @Composable
-fun MainSellTypeSelector(selected: SellType, onClick: (SellType) -> Unit) {
-    Row(
-        Modifier.padding(vertical = 5.dp)
-            .fillMaxWidth(),
-    ) {
-        SellCategoryButton(SellType.AUCTION, selected, onClick)
-        SellCategoryButton(SellType.NORMAL, selected, onClick)
-    }
-}
-
-@Composable
-fun MainBanner(viewModel: MainViewModel) {
-    val mainBanner by viewModel.mainBannerList.collectAsState(listOf())
-
+fun MainBanner(mainBanner: List<Color>) {
     AutoLoopBanner(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(2.5738f)
+            .aspectRatio(1.5f)
 //            .height(300.dp)
             .padding(bottom = 10.dp)
             .background(Color.LightGray),
@@ -122,37 +126,53 @@ fun MainBanner(viewModel: MainViewModel) {
 }
 
 @Composable
-fun NewItemLayout() {
-    Box(
-        modifier = Modifier.fillMaxWidth()
-            .height(150.dp)
-            .padding(bottom = 10.dp)
-            .background(Color.LightGray), contentAlignment = Alignment.Center
-    ) {
-        Text("뉴 아이템 영역")
-    }
+fun NewItemLayout(banners: List<ProductServiceResponse.Product>) {
+    MainItemBanner(
+        banners = banners,
+        title = stringResource(R.string.item_category_new_item),
+        desc = stringResource(R.string.item_category_new_item_desc)
+    )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun BestItemLayout(viewModel: MainViewModel) {
-    val banners by viewModel.bestItemList.collectAsState(listOf())
+fun BestItemLayout(banners: List<ProductServiceResponse.Product>) {
+    MainItemBanner(
+        banners = banners,
+        title = stringResource(R.string.item_category_best_item),
+        desc = stringResource(R.string.item_category_best_item_desc)
+    )
+}
+
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
+fun MainItemBanner(banners: List<ProductServiceResponse.Product>, title: String, desc: String) {
     val lazyListState = rememberLazyListState()
 
-    LazyRow(
-        modifier = Modifier.fillMaxWidth()
-            .height(150.dp)
-            .padding(bottom = 10.dp),
-        state = lazyListState,
-        flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState)
-    ) {
-        items(items = banners) { item ->
-            Text(
-                "베스트 아이템 영역",
-                modifier = Modifier.fillParentMaxSize()
-                    .background(item),
-                textAlign = TextAlign.Center
-            )
+    Column {
+        Text(
+            text = title,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black,
+            modifier = Modifier.padding(top = 20.dp, start = 10.dp)
+        )
+        Text(
+            text = desc,
+            fontSize = 10.sp,
+            color = Color.LightGray,
+            modifier = Modifier.padding(horizontal = 10.dp)
+        )
+
+        LazyRow(
+            modifier = Modifier.fillMaxWidth()
+                .padding(vertical = 10.dp),
+            state = lazyListState,
+            flingBehavior = rememberSnapFlingBehavior(lazyListState = lazyListState),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            items(items = banners) { item ->
+                ProductItem(item)
+            }
         }
     }
 }
