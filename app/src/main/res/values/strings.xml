@@ -2,9 +2,21 @@
     <string name="app_name">Aucison</string>
     <string name="item_type_normal">일반</string>
     <string name="item_type_handmade">핸드메이드</string>
+    <string name="item_type_auction">경매</string>
     <string name="screen_name_my_page">My Page</string>
     <string name="screen_name_sell">Sell</string>
     <string name="screen_name_market">Market</string>
     <string name="screen_name_home">홈</string>
     <string name="toolbar_search_placeholder">브랜드명, 상품명</string>
+    <string name="main_welcome">Aucison이 처음이신가요?</string>
+    <string name="main_desc_auciton">중고 경매 플랫폼 Aucison</string>
+    <string name="item_category_best_item">Best Item</string>
+    <string name="item_category_best_item_desc">인기 상품</string>
+    <string name="item_category_new_item">New Item</string>
+    <string name="item_category_new_item_desc">새로 올라온 상품</string>
+
+    <string name="btn_sell">판매하기</string>
+    <string name="btn_seller_guide">판매자 가이드 보기</string>
+
+    <string name="product_price">%1$s원</string>
 </resources>
