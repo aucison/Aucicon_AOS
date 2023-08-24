@@ -1,6 +1,9 @@
 package com.jglee.aucison.presentation.root
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,7 +31,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.jglee.aucison.data.main.Screen
-
 
 @Composable
 fun RightModalDrawer(
@@ -73,24 +75,27 @@ fun RightModalDrawer(
     }
 }
 
-
 @Composable
-fun Drawer(navController: NavController) {
-    val drawerMenu = listOf(Screen.MARKET, Screen.SELL, Screen.MY_PAGE)
+fun Drawer(navController: NavController, onClick: () -> Unit) {
+    val drawerMenu = listOf(
+        Screen.MARKET,
+        Screen.SELL,
+        Screen.MY_PAGE
+    )
 
-    Column(Modifier.padding(20.dp)) {
+    Column(
+        modifier = Modifier.padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
         drawerMenu.forEach {
-            Button(
-                onClick = {
-                    navController.navigate(it.name)
-                },
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-                border = BorderStroke(0.dp, Color.White),
-                shape = RectangleShape,
-                elevation = ButtonDefaults.elevation(0.dp),
-            ) {
-                Text(text = stringResource(it.resource))
-            }
+            Text(
+                text = stringResource(it.resource),
+                modifier = Modifier
+                    .clickable {
+                        navController.navigate(it.name)
+                        onClick()
+                    }
+            )
         }
     }
 }

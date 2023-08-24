@@ -12,6 +12,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,13 +36,14 @@ import androidx.navigation.compose.rememberNavController
 import com.jglee.aucison.R
 import com.jglee.aucison.data.main.Screen
 import com.jglee.aucison.presentation.main.MainPage
+import com.jglee.aucison.presentation.market.MarketPage
 import com.jglee.aucison.presentation.root.Drawer
 import com.jglee.aucison.presentation.root.RightModalDrawer
 import com.jglee.aucison.ui.theme.AucisonTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MainActivity : ComponentActivity() {
+class MainActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -59,7 +61,13 @@ fun RootScreen() {
     AucisonTheme {
         RightModalDrawer(
             drawerState = scaffoldState.drawerState,
-            drawerContent = { Drawer(navController) }
+            drawerContent = {
+                Drawer(navController) {
+                    coroutineScope.launch(Dispatchers.Main) {
+                        scaffoldState.drawerState.close()
+                    }
+                }
+            }
         ) {
             Scaffold(
                 scaffoldState = scaffoldState,
@@ -84,13 +92,13 @@ fun RootScreen() {
                         MainPage()
                     }
                     composable(route = Screen.MARKET.name) {
-//                        MainPage()
+                        MarketPage()
                     }
                     composable(route = Screen.SELL.name) {
-//                        MainPage()
+                        //                        MainPage()
                     }
                     composable(route = Screen.MY_PAGE.name) {
-//                        MainPage()
+                        //                        MainPage()
                     }
                 }
             }
@@ -106,7 +114,10 @@ fun Toolbar(onClickMenu: () -> Unit) {
 
     Row(
         modifier = Modifier
-            .padding(horizontal = 10.dp, vertical = 10.dp)
+            .padding(
+                horizontal = 10.dp,
+                vertical = 10.dp
+            )
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
@@ -119,8 +130,12 @@ fun Toolbar(onClickMenu: () -> Unit) {
         BasicTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
-            textStyle = TextStyle(color = Color.Black, fontSize = 14.sp),
-            modifier = Modifier.weight(1f)
+            textStyle = TextStyle(
+                color = Color.Black,
+                fontSize = 14.sp
+            ),
+            modifier = Modifier
+                .weight(1f)
                 .padding(5.dp)
                 .border(
                     width = 1.dp,
@@ -129,7 +144,8 @@ fun Toolbar(onClickMenu: () -> Unit) {
                 ),
             decorationBox = { innerTextField ->
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(5.dp)
                 ) {
                     if (searchQuery.isEmpty()) {
@@ -148,7 +164,10 @@ fun Toolbar(onClickMenu: () -> Unit) {
         Button(
             onClick = onClickMenu,
             colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-            border = BorderStroke(0.dp, Color.White),
+            border = BorderStroke(
+                0.dp,
+                Color.White
+            ),
             shape = RectangleShape,
             elevation = ButtonDefaults.elevation(0.dp),
             contentPadding = PaddingValues(5.dp),
@@ -161,7 +180,10 @@ fun Toolbar(onClickMenu: () -> Unit) {
         }
     }
 
-    Divider(color = Color.LightGray, thickness = 1.dp)
+    Divider(
+        color = Color.LightGray,
+        thickness = 1.dp
+    )
 }
 
 @Preview(showBackground = true)

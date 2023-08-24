@@ -3,6 +3,7 @@
     <string name="item_type_normal">일반</string>
     <string name="item_type_handmade">핸드메이드</string>
     <string name="item_type_auction">경매</string>
+    <string name="item_type_non_auction">비경매</string>
     <string name="screen_name_my_page">My Page</string>
     <string name="screen_name_sell">Sell</string>
     <string name="screen_name_market">Market</string>
@@ -14,6 +15,7 @@
     <string name="item_category_best_item_desc">인기 상품</string>
     <string name="item_category_new_item">New Item</string>
     <string name="item_category_new_item_desc">새로 올라온 상품</string>
+    <string name="market_category">카테고리</string>
 
     <string name="btn_sell">판매하기</string>
     <string name="btn_seller_guide">판매자 가이드 보기</string>
