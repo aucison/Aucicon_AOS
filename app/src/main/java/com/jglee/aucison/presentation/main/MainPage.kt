@@ -47,6 +47,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jglee.aucison.R
 import com.jglee.aucison.data.main.ProductServiceResponse
 import com.jglee.aucison.data.main.SellType
+import com.jglee.aucison.presentation.components.SellCategoryButton
 
 @Composable
 fun MainPage() {
@@ -74,23 +75,6 @@ fun MainPage() {
         NewItemLayout(newItemList.value)
     }
 
-}
-
-@Composable
-fun SellCategoryButton(type: SellType, selected: SellType, onClick: (SellType) -> Unit) {
-    val localDensity = LocalDensity.current
-    var height by remember { mutableStateOf(0.dp) }
-    Text(
-        stringResource(type.resource),
-        color = Color.Black,
-        fontSize = 16.sp,
-        fontWeight = if (type == selected) FontWeight.Bold else FontWeight.Medium,
-        modifier = Modifier.onGloballyPositioned { coordinates ->
-            height = with(localDensity) { coordinates.size.height.toDp() }
-        }
-            .clickable { onClick(type) }
-            .padding(10.dp)
-    )
 }
 
 @Composable

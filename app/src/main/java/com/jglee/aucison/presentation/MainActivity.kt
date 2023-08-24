@@ -35,6 +35,7 @@ import androidx.navigation.compose.rememberNavController
 import com.jglee.aucison.R
 import com.jglee.aucison.data.main.Screen
 import com.jglee.aucison.presentation.main.MainPage
+import com.jglee.aucison.presentation.market.MarketPage
 import com.jglee.aucison.presentation.root.Drawer
 import com.jglee.aucison.presentation.root.RightModalDrawer
 import com.jglee.aucison.ui.theme.AucisonTheme
@@ -84,7 +85,7 @@ fun RootScreen() {
                         MainPage()
                     }
                     composable(route = Screen.MARKET.name) {
-//                        MainPage()
+                        MarketPage()
                     }
                     composable(route = Screen.SELL.name) {
 //                        MainPage()
@@ -106,7 +107,10 @@ fun Toolbar(onClickMenu: () -> Unit) {
 
     Row(
         modifier = Modifier
-            .padding(horizontal = 10.dp, vertical = 10.dp)
+            .padding(
+                horizontal = 10.dp,
+                vertical = 10.dp
+            )
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
@@ -120,7 +124,8 @@ fun Toolbar(onClickMenu: () -> Unit) {
             value = searchQuery,
             onValueChange = { searchQuery = it },
             textStyle = TextStyle(color = Color.Black, fontSize = 14.sp),
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
                 .padding(5.dp)
                 .border(
                     width = 1.dp,
@@ -129,7 +134,8 @@ fun Toolbar(onClickMenu: () -> Unit) {
                 ),
             decorationBox = { innerTextField ->
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(5.dp)
                 ) {
                     if (searchQuery.isEmpty()) {
