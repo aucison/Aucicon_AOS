@@ -2,10 +2,14 @@ package com.jglee.aucison.presentation.buy
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -32,6 +36,7 @@ fun BuyProductPage(id: Int) {
         val info = productDetail.value ?: return@Column
 
         ProductImage(url = info.imgUrls.firstOrNull() ?: "")
+        ProductSubImageList(info.imgUrls)
         ProductSellInfo(info = info)
     }
 }
@@ -39,9 +44,9 @@ fun BuyProductPage(id: Int) {
 @Composable
 fun ProductImage(url: String) {
     val painter = if (url.isBlank()) {
-        rememberAsyncImagePainter(url)
-    } else {
         painterResource(id = R.drawable.temp)
+    } else {
+        rememberAsyncImagePainter(url)
     }
 
     Image(
@@ -51,6 +56,17 @@ fun ProductImage(url: String) {
             .fillMaxWidth()
             .aspectRatio(1f)
     )
+}
+
+@Composable
+fun ProductSubImageList(urls: List<String>) {
+    LazyRow(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+        items(items = urls) { url ->
+            Box(modifier = Modifier.size(60.dp).padding(horizontal = 5.dp)) {
+                ProductImage(url = url)
+            }
+        }
+    }
 }
 
 @Composable
