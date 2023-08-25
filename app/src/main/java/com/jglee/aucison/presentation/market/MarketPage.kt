@@ -35,7 +35,7 @@ import com.jglee.aucison.presentation.main.Product
 import com.jglee.aucison.presentation.main.ProductItem
 
 @Composable
-fun MarketPage() {
+fun MarketPage(onClick: (Int) -> Unit) {
     val viewModel = viewModel<MarketViewModel>().apply { 
         requestMarketItems()
     }
@@ -46,7 +46,7 @@ fun MarketPage() {
 
     Column {
         MarketCategoryTab()
-        GridMarketItemList(itemList = marketItems.value)
+        GridMarketItemList(itemList = marketItems.value, onClick)
     }
 }
 
@@ -93,12 +93,14 @@ fun MarketCategoryTab() {
 }
 
 @Composable
-fun GridMarketItemList(itemList: List<Product>) {
-    ProductGrid(itemList = itemList)
+fun GridMarketItemList(itemList: List<Product>, onClick: (Int) -> Unit) {
+    ProductGrid(itemList = itemList, onClick)
 }
 
 @Composable
 @Preview
 fun MarketPreview() {
-    MarketPage()
+    MarketPage() {
+
+    }
 }

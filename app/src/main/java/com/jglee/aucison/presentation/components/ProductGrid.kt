@@ -14,23 +14,23 @@ import com.jglee.aucison.presentation.main.Product
 import com.jglee.aucison.presentation.main.ProductItem
 
 @Composable
-fun GridProductItem(item: Product) {
+fun GridProductItem(item: Product, onClick: (Int) -> Unit) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.padding(bottom = 10.dp)
     ) {
-        ProductItem(product = item)
+        ProductItem(product = item, onClick)
     }
 }
 
 @Composable
-fun ProductGrid(itemList: List<Product>) {
+fun ProductGrid(itemList: List<Product>, onClick: (Int) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(150.dp),
         modifier = Modifier.fillMaxWidth(),
     ) {
         items(itemList) { item ->
-            GridProductItem(item = item)
+            GridProductItem(item = item, onClick)
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.jglee.aucison.presentation.main
 
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -29,8 +31,13 @@ import com.jglee.aucison.R
 import com.jglee.aucison.data.main.ProductServiceResponse
 
 @Composable
-fun ProductItem(product: ProductServiceResponse.Product) {
-    Column {
+fun ProductItem(product: ProductServiceResponse.Product, onClick: (Int) -> Unit) {
+    Column(
+        modifier = Modifier.clickable(onClick = {
+            Log.d("click", "product id: ${product.productsId}")
+            onClick(product.productsId.toInt())
+        })
+    ) {
         Box(
             modifier = Modifier
                 .size(150.dp)

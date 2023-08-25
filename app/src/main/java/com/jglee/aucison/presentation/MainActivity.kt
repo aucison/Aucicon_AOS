@@ -41,6 +41,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.jglee.aucison.R
 import com.jglee.aucison.data.main.Screen
+import com.jglee.aucison.presentation.buy.BuyProductPage
 import com.jglee.aucison.presentation.main.MainPage
 import com.jglee.aucison.presentation.market.MarketPage
 import com.jglee.aucison.presentation.root.Drawer
@@ -96,11 +97,15 @@ fun RootScreen() {
                     startDestination = Screen.MAIN.name,
                     modifier = Modifier.padding(padding)
                 ) {
+                    val onClickProduct = { id: Int ->
+                        navController.navigate("${Screen.BUY}/$id")
+                    }
+
                     composable(route = Screen.MAIN.name) {
-                        MainPage()
+                        MainPage(onClickProduct)
                     }
                     composable(route = Screen.MARKET.name) {
-                        MarketPage()
+                        MarketPage(onClickProduct)
                     }
                     composable(route = Screen.SELL.name) {
                         //                        MainPage()
@@ -115,7 +120,14 @@ fun RootScreen() {
                         )
                     ) {
                         val searchQuery = it.arguments?.getString("query") ?: return@composable
-                        SearchPage(query = searchQuery)
+                        SearchPage(query = searchQuery, onClick = onClickProduct)
+                    }
+                    composable(
+                        route = "${Screen.BUY}/{id}",
+                        arguments = listOf(navArgument("id") { type = NavType.IntType })
+                    ) {
+                        val productId = it.arguments?.getInt("id") ?: return@composable
+                        BuyProductPage(id = productId)
                     }
                 }
             }
