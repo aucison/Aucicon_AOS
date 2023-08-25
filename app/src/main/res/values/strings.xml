@@ -19,7 +19,10 @@
     <string name="market_category">카테고리</string>
     <string name="search_result_query">\'%1$s\' </string>
     <string name="search_result_desc">에 대한 상품 %1$d개</string>
-
+    <string name="sell_my_item">내 아이템 판매하기</string>
+    <string name="caution">주의사항</string>
+    <string name="caution_sell_1">신뢰할 수 있는 거래를 위해 상품 설명 및 사진을 상세히 적어주세요</string>
+    <string name="caution_sell_2">허위 거래 및 사기 등의 행위는 이용 제한 및 법적 제제의 대상이 될 수 있습니다.</string>
     <string name="btn_sell">판매하기</string>
     <string name="btn_buy_now">바로구매</string>
     <string name="btn_pay">결제하기</string>
