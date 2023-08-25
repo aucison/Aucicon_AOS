@@ -1,6 +1,7 @@
 package com.jglee.aucison.presentation
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -105,7 +106,7 @@ fun RootScreen() {
                         //                        MainPage()
                     }
                     composable(
-                        route = "${Screen.SEARCH.name}/{query}",
+                        route = "${Screen.SEARCH}/{query}",
                         arguments = listOf(
                             navArgument("query") { type = NavType.StringType }
                         )

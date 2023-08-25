@@ -17,7 +17,8 @@
     <string name="item_category_new_item">New Item</string>
     <string name="item_category_new_item_desc">새로 올라온 상품</string>
     <string name="market_category">카테고리</string>
-    <string name="search_result_desc">\'%1$s\'에 대한 상품 %2$d개</string>
+    <string name="search_result_query">\'%1$s\' </string>
+    <string name="search_result_desc">에 대한 상품 %1$d개</string>
 
     <string name="btn_sell">판매하기</string>
     <string name="btn_seller_guide">판매자 가이드 보기</string>

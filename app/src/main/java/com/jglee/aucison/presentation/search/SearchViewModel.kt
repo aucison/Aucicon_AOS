@@ -1,5 +1,6 @@
 package com.jglee.aucison.presentation.search
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.jglee.aucison.presentation.main.Product
 import kotlinx.coroutines.flow.MutableStateFlow
