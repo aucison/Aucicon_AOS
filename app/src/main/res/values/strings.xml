@@ -21,7 +21,10 @@
     <string name="search_result_desc">에 대한 상품 %1$d개</string>
 
     <string name="btn_sell">판매하기</string>
+    <string name="btn_buy_now">바로구매</string>
+    <string name="btn_pay">결제하기</string>
     <string name="btn_seller_guide">판매자 가이드 보기</string>
 
     <string name="product_price">%1$s원</string>
+    <string name="title_activity_buy">BuyActivity</string>
 </resources>

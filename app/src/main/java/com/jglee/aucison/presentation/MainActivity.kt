@@ -15,12 +15,15 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -120,14 +123,20 @@ fun RootScreen() {
                         )
                     ) {
                         val searchQuery = it.arguments?.getString("query") ?: return@composable
-                        SearchPage(query = searchQuery, onClick = onClickProduct)
+                        SearchPage(
+                            query = searchQuery,
+                            onClick = onClickProduct
+                        )
                     }
                     composable(
                         route = "${Screen.BUY}/{id}",
                         arguments = listOf(navArgument("id") { type = NavType.IntType })
                     ) {
                         val productId = it.arguments?.getInt("id") ?: return@composable
-                        BuyProductPage(id = productId)
+                        BuyProductPage(
+                            navController = navController,
+                            id = productId
+                        )
                     }
                 }
             }
@@ -153,87 +162,91 @@ fun Toolbar(navController: NavController, onClickMenu: () -> Unit) {
         searchQuery = ""
     }
 
-    Row(
-        modifier = Modifier
-            .padding(
-                horizontal = 10.dp,
-                vertical = 10.dp
-            )
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        Image(
-            painter = painterResource(R.drawable.ic_logo),
-            contentDescription = "app_logo",
+    Column {
+        Row(
             modifier = Modifier
-                .size(30.dp)
-                .clickable {
-                    navController.navigate(Screen.MAIN.name)
-                },
-        )
-
-        BasicTextField(
-            value = searchQuery,
-            onValueChange = { searchQuery = it },
-            textStyle = TextStyle(
-                color = Color.Black,
-                fontSize = 14.sp
-            ),
-            modifier = Modifier
-                .weight(1f)
-                .padding(5.dp)
-                .border(
-                    width = 1.dp,
-                    color = Color.Black,
-                    shape = RoundedCornerShape(5.dp)
-                ),
-            decorationBox = { innerTextField ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(5.dp)
-                ) {
-                    if (searchQuery.isEmpty()) {
-                        Text(
-                            text = stringResource(R.string.toolbar_search_placeholder),
-                            color = Color.Gray,
-                            fontSize = 14.sp
-                        )
-                    }
-
-                    innerTextField()
-                }
-            },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-            keyboardActions = KeyboardActions(onSearch = {
-                navController.navigate("${Screen.SEARCH}/$searchQuery")
-                focusManager.clearFocus()
-            })
-        )
-
-        Button(
-            onClick = onClickMenu,
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
-            border = BorderStroke(
-                0.dp,
-                Color.White
-            ),
-            shape = RectangleShape,
-            elevation = ButtonDefaults.elevation(0.dp),
-            contentPadding = PaddingValues(5.dp),
-            modifier = Modifier.size(30.dp),
+                .padding(
+                    start = 10.dp,
+                    end = 10.dp,
+                    bottom = 10.dp
+                )
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(R.drawable.ic_menu),
-                contentDescription = "open drawer"
+                painter = painterResource(R.drawable.ic_logo),
+                contentDescription = "app_logo",
+                modifier = Modifier
+                    .size(30.dp)
+                    .clickable {
+                        navController.navigate(Screen.MAIN.name)
+                    },
             )
-        }
-    }
 
-    Divider(
-        color = Color.LightGray,
-        thickness = 1.dp
-    )
+            BasicTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                textStyle = TextStyle(
+                    color = Color.Black,
+                    fontSize = 14.sp
+                ),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(5.dp)
+                    .border(
+                        width = 1.dp,
+                        color = Color.Black,
+                        shape = RoundedCornerShape(5.dp)
+                    ),
+                decorationBox = { innerTextField ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(5.dp)
+                    ) {
+                        if (searchQuery.isEmpty()) {
+                            Text(
+                                text = stringResource(R.string.toolbar_search_placeholder),
+                                color = Color.Gray,
+                                fontSize = 14.sp
+                            )
+                        }
+
+                        innerTextField()
+                    }
+                },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(onSearch = {
+                    navController.navigate("${Screen.SEARCH}/$searchQuery")
+                    focusManager.clearFocus()
+                })
+            )
+
+            Button(
+                onClick = onClickMenu,
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+                border = BorderStroke(
+                    0.dp,
+                    Color.White
+                ),
+                shape = RectangleShape,
+                elevation = ButtonDefaults.elevation(0.dp),
+                contentPadding = PaddingValues(5.dp),
+                modifier = Modifier.size(30.dp),
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ic_menu),
+                    contentDescription = "open drawer"
+                )
+            }
+        }
+
+        Divider(
+            color = Color.LightGray,
+            thickness = 1.dp,
+        )
+    }
 }
 
 @Preview(showBackground = true)
