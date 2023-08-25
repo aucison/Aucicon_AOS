@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -14,6 +15,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -29,9 +32,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.jglee.aucison.R
@@ -75,9 +80,7 @@ fun RootScreen() {
                 scaffoldState = scaffoldState,
                 topBar = {
                     Toolbar(
-                        onSearched = {
-                            navController.navigate("${Screen.SEARCH}/$it")
-                        },
+                        navController = navController,
                         onClickMenu = {
                             coroutineScope.launch(Dispatchers.Main) {
                                 scaffoldState.drawerState.run {
@@ -121,10 +124,22 @@ fun RootScreen() {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Toolbar(onSearched: (String) -> Unit, onClickMenu: () -> Unit) {
+fun Toolbar(navController: NavController, onClickMenu: () -> Unit) {
     var searchQuery by remember { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    LaunchedEffect(key1 = currentRoute) {
+        Log.d(
+            "screen",
+            "$currentRoute"
+        )
+        if (currentRoute?.contains(Screen.SEARCH.name) == true) return@LaunchedEffect
+        searchQuery = ""
+    }
 
     Row(
         modifier = Modifier
@@ -137,8 +152,12 @@ fun Toolbar(onSearched: (String) -> Unit, onClickMenu: () -> Unit) {
     ) {
         Image(
             painter = painterResource(R.drawable.ic_logo),
-            modifier = Modifier.size(30.dp),
-            contentDescription = "app_logo"
+            contentDescription = "app_logo",
+            modifier = Modifier
+                .size(30.dp)
+                .clickable {
+                    navController.navigate(Screen.MAIN.name)
+                },
         )
 
         BasicTextField(
@@ -175,7 +194,8 @@ fun Toolbar(onSearched: (String) -> Unit, onClickMenu: () -> Unit) {
             },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions(onSearch = {
-                onSearched(searchQuery)
+                navController.navigate("${Screen.SEARCH}/$searchQuery")
+                focusManager.clearFocus()
             })
         )
 
