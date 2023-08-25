@@ -28,7 +28,7 @@ import com.jglee.aucison.presentation.components.ProductGrid
 import com.jglee.aucison.presentation.main.Product
 
 @Composable
-fun SearchPage(query: String) {
+fun SearchPage(query: String, onClick: (Int) -> Unit) {
     val viewModel = viewModel<SearchViewModel>().apply {
         requestSearch(query)
     }
@@ -38,7 +38,7 @@ fun SearchPage(query: String) {
 
     Column(modifier = Modifier.padding(10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         SearchResultInfo(searchedInfo.value)
-        SearchResultItemList(searchedItemList.value)
+        SearchResultItemList(searchedItemList.value, onClick)
     }
 }
 
@@ -79,6 +79,6 @@ fun SearchResultInfo(searchedInfo: Pair<String, Int>) {
 }
 
 @Composable
-fun SearchResultItemList(list: List<Product>) {
-    ProductGrid(itemList = list)
+fun SearchResultItemList(list: List<Product>, onClick: (Int) -> Unit) {
+    ProductGrid(itemList = list, onClick)
 }

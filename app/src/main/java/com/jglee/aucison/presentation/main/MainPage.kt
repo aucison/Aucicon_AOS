@@ -50,7 +50,7 @@ import com.jglee.aucison.data.main.SellType
 import com.jglee.aucison.presentation.components.SellCategoryButton
 
 @Composable
-fun MainPage() {
+fun MainPage(onClickItem: (Int) -> Unit) {
     var selectedSellType by remember { mutableStateOf(SellType.AUCTION) }
     val verticalScrollState = rememberScrollState()
     val viewModel = viewModel<MainViewModel>().apply {
@@ -71,8 +71,8 @@ fun MainPage() {
     ) {
         MainBanner(mainBanners.value)
         MainSellTypeSelector(selectedSellType) { selectedSellType = it }
-        BestItemLayout(bestItemList.value)
-        NewItemLayout(newItemList.value)
+        BestItemLayout(bestItemList.value, onClickItem)
+        NewItemLayout(newItemList.value, onClickItem)
     }
 
 }
@@ -110,26 +110,28 @@ fun MainBanner(mainBanner: List<Color>) {
 }
 
 @Composable
-fun NewItemLayout(banners: List<ProductServiceResponse.Product>) {
+fun NewItemLayout(banners: List<ProductServiceResponse.Product>, onClickItem: (Int) -> Unit) {
     MainItemBanner(
         banners = banners,
         title = stringResource(R.string.item_category_new_item),
-        desc = stringResource(R.string.item_category_new_item_desc)
+        desc = stringResource(R.string.item_category_new_item_desc),
+        onClickItem = onClickItem
     )
 }
 
 @Composable
-fun BestItemLayout(banners: List<ProductServiceResponse.Product>) {
+fun BestItemLayout(banners: List<ProductServiceResponse.Product>, onClickItem: (Int) -> Unit) {
     MainItemBanner(
         banners = banners,
         title = stringResource(R.string.item_category_best_item),
-        desc = stringResource(R.string.item_category_best_item_desc)
+        desc = stringResource(R.string.item_category_best_item_desc),
+        onClickItem = onClickItem
     )
 }
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
-fun MainItemBanner(banners: List<ProductServiceResponse.Product>, title: String, desc: String) {
+fun MainItemBanner(banners: List<ProductServiceResponse.Product>, title: String, desc: String, onClickItem: (Int) -> Unit) {
     val lazyListState = rememberLazyListState()
 
     Column {
@@ -155,7 +157,7 @@ fun MainItemBanner(banners: List<ProductServiceResponse.Product>, title: String,
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             items(items = banners) { item ->
-                ProductItem(item)
+                ProductItem(item, onClickItem)
             }
         }
     }
@@ -164,5 +166,7 @@ fun MainItemBanner(banners: List<ProductServiceResponse.Product>, title: String,
 @Composable
 @Preview
 fun previewMainPage() {
-    MainPage()
+    MainPage() {
+
+    }
 }

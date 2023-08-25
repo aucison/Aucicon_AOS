@@ -89,7 +89,7 @@ fun Drawer(navController: NavController, onClick: () -> Unit) {
     ) {
         drawerMenu.forEach {
             Text(
-                text = stringResource(it.resource),
+                text = it.resource?.let{ name -> stringResource(name) } ?: "" ,
                 modifier = Modifier
                     .clickable {
                         navController.navigate(it.name)
