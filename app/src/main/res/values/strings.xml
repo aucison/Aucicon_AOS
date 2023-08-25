@@ -28,6 +28,17 @@
     <string name="btn_pay">결제하기</string>
     <string name="btn_seller_guide">판매자 가이드 보기</string>
 
+    <string name="title">제목</string>
+    <string name="product_info">상품 설명</string>
+    <string name="product_info_desc">상품에 대한 상세 설명 등을 작성해주세요.</string>
+    <string name="import_image">사진 첨부</string>
+    <string name="disable_auction_type">경매 비활성화</string>
+    <string name="min_price">최소 가격</string>
+    <string name="min_price_desc">경매 최소 가격을 입력해주세요. (₩ 단위로 입력해주세요)</string>
+    <string name="auction_price">경매가</string>
+    <string name="auction_price_desc">경매가를 입력해주세요. (₩ 단위로 입력해주세요)</string>
+    <string name="start_price">경매 최소 가격을 입력해주세요. (₩ 단위로 입력해주세요)</string>
+
     <string name="product_price">%1$s원</string>
     <string name="title_activity_buy">BuyActivity</string>
 </resources>
