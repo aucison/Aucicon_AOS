@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jglee.aucison.R
 import com.jglee.aucison.data.main.SellType
+import com.jglee.aucison.presentation.components.GridProductItem
+import com.jglee.aucison.presentation.components.ProductGrid
 import com.jglee.aucison.presentation.components.SellCategoryButton
 import com.jglee.aucison.presentation.main.Product
 import com.jglee.aucison.presentation.main.ProductItem
@@ -92,19 +94,7 @@ fun MarketCategoryTab() {
 
 @Composable
 fun GridMarketItemList(itemList: List<Product>) {
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(150.dp),
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        items(itemList) { item ->
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.padding(bottom = 10.dp)
-            ) {
-                ProductItem(product = item)
-            }
-        }
-    }
+    ProductGrid(itemList = itemList)
 }
 
 @Composable
