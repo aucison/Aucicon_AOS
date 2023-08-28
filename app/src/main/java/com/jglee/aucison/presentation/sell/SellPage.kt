@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,7 +22,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -47,7 +50,6 @@ fun SellPage(navController: NavController) {
     Column(
         verticalArrangement = Arrangement.spacedBy(20.dp),
         modifier = Modifier
-            .padding(10.dp)
             .verticalScroll(scrollState)
     ) {
         SellCaution()
@@ -59,6 +61,7 @@ fun SellPage(navController: NavController) {
 private fun SellCaution() {
     Column(
         modifier = Modifier
+            .padding(top = 10.dp, start = 10.dp, end = 10.dp)
             .background(
                 color = LightGray,
                 shape = RoundedCornerShape(10.dp)
@@ -93,7 +96,7 @@ private fun SellForm() {
     var price by remember { mutableStateOf("") }
     var auctionPrice by remember { mutableStateOf("") }
 
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.padding(10.dp)) {
         SellCategory()
         SellInputField(
             label = stringResource(id = R.string.title),
@@ -132,9 +135,9 @@ private fun SellLabel(text: String) {
     Text(
         text = text,
         fontWeight = FontWeight.Bold,
-        fontSize = 18.sp,
+        fontSize = 16.sp,
         color = Color.Black,
-        modifier = Modifier.width(100.dp),
+        modifier = Modifier.width(80.dp),
         textAlign = TextAlign.Start
     )
 }
@@ -147,7 +150,7 @@ private fun SellCategory() {
     )
     var selected by remember { mutableStateOf((categoryList.first())) }
 
-    Row {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         SellLabel(text = stringResource(R.string.market_category))
 
         categoryList.forEach { category ->
@@ -157,6 +160,8 @@ private fun SellCategory() {
             ) {
                 selected = category
             }
+
+            Spacer(Modifier.width(10.dp))
         }
 
     }
@@ -218,23 +223,23 @@ private fun SellFormButton(selected: SellType, category: SellType, onClick: () -
     val isSelected = (selected == category)
     val textColor = if (isSelected) Color.White else ButtonUnselected
     val backColor = if (isSelected) Color.Black else Color.White
+    val borderColor = if (isSelected) Color.Black else ButtonUnselected
 
     Text(
         text = stringResource(id = category.resource),
         color = textColor,
         modifier = Modifier
-            .background(
-                color = backColor,
-                shape = RoundedCornerShape(5.dp)
-            )
             .border(
                 width = 1.dp,
-                color = backColor
+                color = borderColor,
+                shape = RoundedCornerShape(5.dp)
             )
+            .clip(shape = RoundedCornerShape(5.dp))
+            .background(color = backColor)
+            .clickable(onClick = onClick)
             .padding(
                 vertical = 5.dp,
                 horizontal = 15.dp
             )
-            .clickable(onClick = onClick)
     )
 }
