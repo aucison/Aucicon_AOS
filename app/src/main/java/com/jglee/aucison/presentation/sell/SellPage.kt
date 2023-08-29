@@ -9,13 +9,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,9 +28,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -37,6 +42,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.jglee.aucison.R
 import com.jglee.aucison.data.main.SellType
+import com.jglee.aucison.presentation.components.AcoToggleButton
 import com.jglee.aucison.presentation.components.getBulletText
 import com.jglee.aucison.ui.theme.ButtonUnselected
 import com.jglee.aucison.ui.theme.CautionColor
@@ -110,9 +116,16 @@ private fun SellForm() {
             text = productDescription,
             placeHolder = stringResource(id = R.string.product_info_desc),
             singleLine = false,
-            modifier = Modifier.fillMaxWidth().aspectRatio(1f),
+            modifier = Modifier.fillMaxWidth()
+                .aspectRatio(1f),
+            verticalAlignment = Alignment.Top,
             onValueChange = { productDescription = it }
         )
+        SellToggle(
+            label = stringResource(R.string.disable_auction_type)
+        ) {
+
+        }
         SellInputField(
             label = stringResource(id = R.string.min_price),
             text = price,
@@ -127,6 +140,9 @@ private fun SellForm() {
             singleLine = true,
             onValueChange = { auctionPrice = it }
         )
+        SellButton {
+
+        }
     }
 }
 
@@ -135,10 +151,11 @@ private fun SellLabel(text: String) {
     Text(
         text = text,
         fontWeight = FontWeight.Bold,
-        fontSize = 16.sp,
+        fontSize = 14.sp,
         color = Color.Black,
-        modifier = Modifier.width(80.dp),
-        textAlign = TextAlign.Start
+        modifier = Modifier.width(100.dp),
+        maxLines = 1,
+        textAlign = TextAlign.Start,
     )
 }
 
@@ -168,15 +185,35 @@ private fun SellCategory() {
 }
 
 @Composable
+private fun SellToggle(
+    label: String,
+    onToggle: (Boolean) -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        SellLabel(text = label)
+        AcoToggleButton(
+            modifier = Modifier.width(50.dp)
+                .height(25.dp),
+            onToggle = onToggle
+        )
+    }
+}
+
+@Composable
 private fun SellInputField(
     label: String,
     text: String,
     placeHolder: String,
     singleLine: Boolean,
     modifier: Modifier? = null,
+    verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
     onValueChange: (String) -> Unit,
 ) {
-    Row {
+    Row(
+        verticalAlignment = verticalAlignment
+    ) {
         SellLabel(text = label)
 
         val fieldModifier = Modifier
@@ -198,15 +235,20 @@ private fun SellInputField(
             modifier = modifier?.let { fieldModifier.then(it) } ?: fieldModifier,
             decorationBox = { innerTextField ->
                 Row(
+                    verticalAlignment =
+                        if (singleLine) Alignment.CenterVertically
+                        else Alignment.Top,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(5.dp)
+                        .padding(10.dp)
                 ) {
                     if (text.isEmpty()) {
                         Text(
                             text = placeHolder,
                             color = ButtonUnselected,
-                            fontSize = 14.sp
+                            maxLines = 1,
+                            textAlign = TextAlign.Center,
+                            fontSize = 12.sp
                         )
                     }
 
@@ -241,5 +283,22 @@ private fun SellFormButton(selected: SellType, category: SellType, onClick: () -
                 vertical = 5.dp,
                 horizontal = 15.dp
             )
+    )
+}
+
+@Composable
+private fun SellButton(onClick : () -> Unit) {
+    Text(
+        text = stringResource(id = R.string.btn_sell),
+        textAlign = TextAlign.Center,
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Bold,
+        color = Color.White,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(shape = RoundedCornerShape(5.dp))
+            .background(color = Color.Black)
+            .clickable(onClick = onClick)
+            .padding(vertical = 10.dp,)
     )
 }
