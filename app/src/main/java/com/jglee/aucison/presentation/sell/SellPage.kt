@@ -116,11 +116,15 @@ private fun SellForm() {
             text = productDescription,
             placeHolder = stringResource(id = R.string.product_info_desc),
             singleLine = false,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .aspectRatio(1f),
             verticalAlignment = Alignment.Top,
             onValueChange = { productDescription = it }
         )
+        SellUploadImage {
+
+        }
         SellToggle(
             label = stringResource(R.string.disable_auction_type)
         ) {
@@ -301,4 +305,26 @@ private fun SellButton(onClick : () -> Unit) {
             .clickable(onClick = onClick)
             .padding(vertical = 10.dp,)
     )
+}
+
+@Composable
+private fun SellUploadImage(onClick: () -> Unit) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        SellLabel(
+            text = stringResource(R.string.upload_image)
+        )
+        Text(
+            text = stringResource(id = R.string.btn_upload_image),
+            textAlign = TextAlign.Center,
+            fontSize = 14.sp,
+            color = Color.White,
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(5.dp))
+                .background(color = Color.Black)
+                .clickable(onClick = onClick)
+                .padding(vertical = 5.dp, horizontal = 15.dp)
+        )
+    }
 }
