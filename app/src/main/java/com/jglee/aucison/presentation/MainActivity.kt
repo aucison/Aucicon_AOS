@@ -50,6 +50,7 @@ import com.jglee.aucison.presentation.market.MarketPage
 import com.jglee.aucison.presentation.root.Drawer
 import com.jglee.aucison.presentation.root.RightModalDrawer
 import com.jglee.aucison.presentation.search.SearchPage
+import com.jglee.aucison.presentation.sell.SellPage
 import com.jglee.aucison.ui.theme.AucisonTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -111,7 +112,7 @@ fun RootScreen() {
                         MarketPage(onClickProduct)
                     }
                     composable(route = Screen.SELL.name) {
-                        //                        MainPage()
+                        SellPage(navController = navController)
                     }
                     composable(route = Screen.MY_PAGE.name) {
                         //                        MainPage()
